@@ -1,0 +1,8 @@
+{
+  "name": "lembrete-whatsapp",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "dependencies": {
+    "firebase-admin": "^11.0.0"
+  }
+}
