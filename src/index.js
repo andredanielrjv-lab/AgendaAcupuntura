@@ -12,18 +12,25 @@ initializeApp({
 const db = getFirestore();
 
 async function verificarAgendamentos() {
-  console.log('Buscando todos os documentos da coleção dias_disponiveis...');
+  const hoje = new Date();
+  hoje.setDate(hoje.getDate() + 1);
+  const dataFormatada = hoje.toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
 
-  const snapshot = await db.collection('dias_disponiveis').get();
+  console.log(`Verificando agendamentos para: ${dataFormatada}`);
+
+  const snapshot = await db.collection('dias_disponiveis')
+    .where('data', '==', dataFormatada)
+    .where('status', '==', 'reservado')
+    .get();
 
   if (snapshot.empty) {
-    console.log('A coleção dias_disponiveis está vazia.');
+    console.log('Nenhum agendamento pendente para amanhã.');
     return;
   }
 
   snapshot.forEach(doc => {
-    const dados = doc.data();
-    console.log(`ID: ${doc.id} | Data: ${dados.data} | Status: ${dados.status} | Cliente: ${dados.nomeCliente}`);
+    const agendamento = doc.data();
+    console.log(`[ENCONTRADO] Cliente: ${agendamento.nomeCliente} | Telefone: ${agendamento.telefoneCliente} | Hora: ${agendamento.hora}`);
   });
 }
 
